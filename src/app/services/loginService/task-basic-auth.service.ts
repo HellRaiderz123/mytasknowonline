@@ -72,6 +72,13 @@ export class TaskBasicAuthService {
         //this.user = user;
         //User - add details Api call
         this.authUser = JSON.parse(JSON.stringify(user));
+        const userData: UserDet = {
+          userId: this.authUser.uid,
+          userEmail: this.authUser.email,
+          userName: this.authUser.displayName,
+          userDetails: '',
+          userIssues: ''
+        };
         this.users.userId = (this.authUser.uid);
         this.users.userEmail = (this.authUser.email);
         this.users.userName = (fullName);
@@ -128,12 +135,34 @@ get isLoggedIn(): boolean{
 
 async  loginWithGoogle(){
   await  this.afAuth.signInWithPopup(new auth.GoogleAuthProvider()).then( () => {
+    
     this.afAuth.authState.subscribe(async user => {
-      this.taskUsersService.getUserDataByID(JSON.parse(JSON.stringify(user)).uid);
+
+        if (user){
+          
+          //User - add details Api call
+          this.authUser = JSON.parse(JSON.stringify(user));
+
+          const userData: UserDet = {
+            userId: this.authUser.uid,
+            userEmail: this.authUser.email,
+            userName: this.authUser.displayName,
+            userDetails: '',
+            userIssues: ''
+          };
+          //calling end point
+          (await this.taskUsersService.postUserDataOnReg(userData)).subscribe();
+        } else {
+          localStorage.setItem('user', "");
+        }
+        
+
+      this.taskUsersService.getUserDataByID(this.authUser.uid);
       this.router.navigate(['']);
-    });
+
   });
  
+})
 }
 
 getUserDetails() : UserDet {
