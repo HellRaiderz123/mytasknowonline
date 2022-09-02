@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  backendHost: 'https://mytasknowco-9d4d5.web.app'
+  backendHost: 'http://localhost'
 
 };
 
