@@ -109,10 +109,14 @@ async sendPasswordResetEmail(passwordResetEmail: string) {
 }
 
 async logout(){
+  localStorage.removeItem('user');
+  localStorage.removeItem('userDet');
+  console.log(' loggin out and deleting data');
   await this.afAuth.signOut().then( () => {
     localStorage.removeItem('user');
     localStorage.removeItem('userDet');
   });
+
 
 }
 
@@ -123,8 +127,13 @@ get isLoggedIn(): boolean{
 }
 
 async  loginWithGoogle(){
-  await  this.afAuth.signInWithPopup(new auth.GoogleAuthProvider())
-  this.router.navigate(['admin/list']);
+  await  this.afAuth.signInWithPopup(new auth.GoogleAuthProvider()).then( () => {
+    this.afAuth.authState.subscribe(async user => {
+      this.taskUsersService.getUserDataByID(JSON.parse(JSON.stringify(user)).uid);
+      this.router.navigate(['']);
+    });
+  });
+ 
 }
 
 getUserDetails() : UserDet {

@@ -13,4 +13,8 @@ export class TaskHeaderComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  public logout(){
+    this.taskBasicAuthService.logout();
+  }
+
 }
